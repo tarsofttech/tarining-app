@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
+import '../services/api_service.dart';
 
 class TodoPage extends StatefulWidget {
   static const routeName = '/todos';
@@ -26,11 +27,32 @@ class _TodoPageState extends State<TodoPage> {
 
   Future<void> _loadTodos() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString('todos') ?? '[]';
-    final List decoded = json.decode(raw) as List;
-    setState(() {
-      _todos = decoded.cast<Map<String, dynamic>>();
-    });
+
+    // Load cached tasks first so UI is responsive
+    try {
+      final raw = prefs.getString('todos') ?? '[]';
+      final List decoded = json.decode(raw) as List;
+      setState(() {
+        _todos = decoded.cast<Map<String, dynamic>>();
+      });
+    } catch (_) {}
+
+    // Then try to fetch from remote API and replace cache if successful
+    try {
+      final remote = await ApiService.fetchTasks();
+      final mapped = remote
+          .map((t) => {
+                'title': t['title'] as String? ?? '',
+                'done': t['isCompleted'] as bool? ?? false,
+              })
+          .toList();
+      setState(() {
+        _todos = mapped.cast<Map<String, dynamic>>();
+      });
+      await prefs.setString('todos', json.encode(_todos));
+    } catch (_) {
+      // ignore remote errors and keep cache
+    }
   }
 
   Future<void> _saveTodos() async {
