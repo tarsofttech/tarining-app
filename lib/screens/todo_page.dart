@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lottie/lottie.dart';
 
 import '../main.dart';
 import '../services/api_service.dart';
@@ -211,12 +212,17 @@ class _TodoPageState extends State<TodoPage> {
                   ? Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Icon(Icons.folder_open, size: 96, color: Color(0xFFBDBDBD)),
-                          SizedBox(height: 18),
-                          Text('No tasks yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                          SizedBox(height: 6),
-                          Text('Add your first task above', style: TextStyle(color: Color(0xFF9E9E9E))),
+                        children: [
+                          Lottie.asset(
+                            'lib/assets/Not Found.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 12),
+                          const Text('No tasks yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 6),
+                          const Text('Add your first task above', style: TextStyle(color: Color(0xFF9E9E9E))),
                         ],
                       ),
                     )

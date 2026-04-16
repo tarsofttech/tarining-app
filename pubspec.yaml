@@ -71,6 +71,7 @@ flutter:
     - asset/
     - asset/logo.png
     - asset/todo.svg
+    - "lib/assets/Not Found.json"
 
   #   - images/a_dot_ham.jpeg
 
